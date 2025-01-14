@@ -1,0 +1,38 @@
+function markPopupAsOpened() {
+    var now = new Date();
+    now.setTime(now.getTime() + 3600000); // 3600000 = 1 giờ
+    document.cookie = "popupOpened=true; expires=" + now.toUTCString() + "; path=/";
+}
+
+function hasPopupBeenOpened() {
+    var cookies = document.cookie.split("; ");
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].split("=");
+        if (cookie[0] === "popupOpened" && cookie[1] === "true") {
+            return true;
+        }
+    }
+    return false;
+}
+
+var linkToOpen = "https://magiamgia.top/coupon.html"; // link quang cao
+
+function createPopupAndRedirect(link) {
+    markPopupAsOpened();
+    var popup = window.open(link, "_blank");
+}
+
+document.addEventListener("click", function(event) {
+    var clickedElement = event.target;
+    var isAdContainer = clickedElement.closest('popup-giua-man-hinh');
+    var isMpAdz = clickedElement.closest('.mp-adz');
+    var isAdsHeader = clickedElement.closest('.ads-header');
+    var isAdsPreload = clickedElement.closest('#mp-preload-popup-overlay');
+    var isCatfishMobile = clickedElement.closest('.banner-sticky-footer-wrapper');
+
+    if (!isAdContainer && !isAdsHeader && !isMpAdz && !isAdsPreload && !isCatfishMobile) {
+        if (!hasPopupBeenOpened()) {
+            createPopupAndRedirect(linkToOpen);
+        }
+    }
+});
